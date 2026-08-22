@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0a1118" />
+  <meta name="description" content="AeroVista Local — free utilities for Coeur d'Alene and North Idaho spanning local discovery, conditions, property intelligence and digital safety." />
+  <meta property="og:title" content="AeroVista Local — Useful things, built here." />
+  <meta property="og:description" content="Free AeroVista Local utilities for North Idaho: CDA Fair Day, Lake Day, CDA Tonight, LotScope and TrustScope." />
+  <meta property="og:type" content="website" />
+  <title>AeroVista Local — Useful things, built here.</title>
+  <style>
+    :root{
+      --bg:#081018;
+      --bg2:#0d1821;
+      --card:#101e28;
+      --card2:#13242f;
+      --ink:#f4f7f5;
+      --muted:#a8b6bc;
+      --soft:#dce6e4;
+      --line:rgba(255,255,255,.11);
+      --accent:#63d6c5;
+      --accent2:#8bd2ff;
+      --warm:#f0c77b;
+      --good:#89e8b4;
+      --shadow:0 22px 60px rgba(0,0,0,.25);
+      --radius:24px;
+      --max:1180px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 88% 4%, rgba(99,214,197,.15), transparent 28rem),
+        radial-gradient(circle at 10% 24%, rgba(139,210,255,.08), transparent 31rem),
+        linear-gradient(180deg,var(--bg),#071019 45%,#08131b 100%);
+      line-height:1.5;
+      min-height:100vh;
+    }
+    a{color:inherit;text-decoration:none}
+    button,a{ -webkit-tap-highlight-color:transparent }
+    .wrap{width:min(calc(100% - 36px),var(--max));margin:auto}
+    .topo{
+      position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.33;
+      mask-image:linear-gradient(to bottom,black 15%,transparent 95%);
+    }
+    .topo svg{width:100%;height:100%;min-height:820px;display:block}
+    .site-header{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter:blur(18px);
+      background:rgba(8,16,24,.72);
+      border-bottom:1px solid rgba(255,255,255,.075);
+    }
+    .nav{
+      min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:760;letter-spacing:-.02em}
+    .mark{
+      width:34px;height:34px;border:1px solid rgba(255,255,255,.18);border-radius:11px;
+      display:grid;place-items:center;background:linear-gradient(145deg,rgba(99,214,197,.18),rgba(139,210,255,.08));
+      box-shadow:inset 0 0 25px rgba(99,214,197,.08);
+    }
+    .brand small{display:block;color:var(--muted);font-size:.69rem;text-transform:uppercase;letter-spacing:.16em;font-weight:700;margin-top:-2px}
+    .nav-links{display:flex;align-items:center;gap:26px;color:#c7d2d6;font-size:.9rem}
+    .nav-links a:hover{color:white}
+    .nav-cta{
+      border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.055);
+      padding:10px 15px;border-radius:999px;font-weight:700
+    }
+    .hero{position:relative;padding:112px 0 82px;overflow:hidden}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:70px;align-items:end}
+    .eyebrow{
+      display:inline-flex;gap:9px;align-items:center;
+      color:#b9c9ce;text-transform:uppercase;letter-spacing:.16em;font-weight:800;font-size:.73rem;
+      margin-bottom:24px
+    }
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(99,214,197,.12)}
+    h1{font-size:clamp(3.3rem,7vw,7.1rem);line-height:.91;letter-spacing:-.065em;margin:0 0 28px;max-width:900px}
+    h1 .local{color:var(--accent)}
+    .lede{font-size:clamp(1.08rem,1.6vw,1.35rem);color:#c6d3d7;max-width:720px;margin:0 0 34px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+    .btn{
+      min-height:48px;padding:0 19px;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;
+      gap:9px;font-weight:800;border:1px solid var(--line);transition:.2s transform,.2s background
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn.primary{background:var(--ink);color:#0b1319;border-color:transparent}
+    .btn.secondary{background:rgba(255,255,255,.04)}
+    .hero-note{
+      padding:24px;border:1px solid var(--line);border-radius:20px;background:rgba(13,24,33,.7);
+      box-shadow:var(--shadow)
+    }
+    .hero-note strong{font-size:1.05rem}
+    .hero-note p{color:var(--muted);margin:8px 0 0}
+    .mini-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);font-weight:850;margin-bottom:12px}
+    .principles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:17px}
+    .principle{
+      border-top:1px solid var(--line);padding-top:13px;color:#c7d3d6;font-size:.84rem
+    }
+    .section{padding:92px 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:40px;margin-bottom:34px}
+    .section-head h2{font-size:clamp(2.2rem,4.4vw,4.5rem);line-height:.97;letter-spacing:-.05em;margin:0}
+    .section-head p{max-width:520px;color:var(--muted);margin:0 0 6px;font-size:1.02rem}
+    .tools-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .tool{
+      grid-column:span 6;min-height:330px;border-radius:var(--radius);border:1px solid var(--line);
+      padding:26px;position:relative;overflow:hidden;background:linear-gradient(160deg,var(--card2),var(--card));
+      display:flex;flex-direction:column;justify-content:space-between;
+      transition:.22s transform,.22s border-color,.22s box-shadow
+    }
+    .tool:hover{transform:translateY(-4px);border-color:rgba(99,214,197,.34);box-shadow:0 26px 60px rgba(0,0,0,.22)}
+    .tool:before{
+      content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-90px;top:-110px;
+      background:radial-gradient(circle,rgba(99,214,197,.2),transparent 66%);
+    }
+    .tool.featured{grid-column:span 7}
+    .tool.side{grid-column:span 5}
+    .status{
+      display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.12);border-radius:999px;
+      padding:6px 9px;color:#c7d3d7;font-size:.72rem;font-weight:850;text-transform:uppercase;letter-spacing:.08em;background:rgba(0,0,0,.11)
+    }
+    .status.live:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(137,232,180,.11)}
+    .status.next:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--warm)}
+    .tool h3{font-size:clamp(1.7rem,3vw,2.55rem);margin:14px 0 8px;letter-spacing:-.035em}
+    .tool p{color:var(--muted);max-width:560px;margin:0}
+    .tool-foot{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-top:38px}
+    .tool-type{font-size:.76rem;color:#91a4aa;text-transform:uppercase;letter-spacing:.13em;font-weight:800}
+    .arrow{
+      width:46px;height:46px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);
+      font-size:1.3rem;background:rgba(255,255,255,.035)
+    }
+    .coming{margin-top:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .coming-card{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:18px;padding:19px;min-height:160px}
+    .coming-card h4{font-size:1.12rem;margin:18px 0 7px}
+    .coming-card p{font-size:.88rem;color:var(--muted);margin:0}
+    .story{
+      border-block:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.012));
+    }
+    .story-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px;align-items:start}
+    .story-sticky{position:sticky;top:110px}
+    .story-sticky h2{font-size:clamp(2.5rem,4.8vw,4.9rem);line-height:.95;letter-spacing:-.055em;margin:0 0 22px}
+    .story-sticky p{color:var(--muted);font-size:1.05rem}
+    .steps{display:grid;gap:12px}
+    .step{display:grid;grid-template-columns:58px 1fr;gap:20px;border-top:1px solid var(--line);padding:25px 0}
+    .step-num{font-size:.8rem;color:var(--accent);font-weight:850;letter-spacing:.12em}
+    .step h3{margin:0 0 7px;font-size:1.35rem}
+    .step p{margin:0;color:var(--muted)}
+    .proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .proof-card{border:1px solid var(--line);border-radius:20px;padding:22px;background:rgba(255,255,255,.026)}
+    .proof-card .icon{font-size:1.4rem}
+    .proof-card h3{font-size:1.17rem;margin:22px 0 7px}
+    .proof-card p{margin:0;color:var(--muted);font-size:.92rem}
+    .business{
+      padding:32px;border-radius:28px;border:1px solid rgba(99,214,197,.2);
+      background:
+        radial-gradient(circle at 85% 15%,rgba(99,214,197,.16),transparent 21rem),
+        linear-gradient(135deg,#10232d,#0d1921);
+      display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center
+    }
+    .business h2{font-size:clamp(2.4rem,4vw,4.3rem);line-height:.98;letter-spacing:-.05em;margin:0 0 16px}
+    .business p{color:#b9c9ce;font-size:1.02rem;max-width:650px}
+    .service-list{display:grid;gap:10px}
+    .service{padding:14px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:20px}
+    .service span:last-child{color:var(--muted)}
+    .footer{padding:46px 0 62px;color:#9babb0;font-size:.88rem}
+    .footer-grid{display:flex;justify-content:space-between;align-items:end;gap:30px;border-top:1px solid var(--line);padding-top:28px}
+    .footer strong{color:white}
+    .tiny-links{display:flex;gap:18px;flex-wrap:wrap}
+    @media (max-width:900px){
+      .nav-links a:not(.nav-cta){display:none}
+      .hero{padding-top:82px}
+      .hero-grid,.story-grid,.business{grid-template-columns:1fr;gap:36px}
+      .hero-note{max-width:600px}
+      .tool.featured,.tool.side,.tool{grid-column:span 12}
+      .coming{grid-template-columns:repeat(2,1fr)}
+      .story-sticky{position:static}
+      .proof-grid{grid-template-columns:1fr}
+      .section-head{display:block}
+      .section-head p{margin-top:18px}
+    }
+    @media (max-width:580px){
+      .wrap{width:min(calc(100% - 24px),var(--max))}
+      .nav{min-height:64px}
+      .brand small{display:none}
+      .hero{padding:66px 0 60px}
+      h1{font-size:clamp(3rem,17vw,4.7rem)}
+      .principles{grid-template-columns:1fr}
+      .section{padding:68px 0}
+      .coming{grid-template-columns:1fr}
+      .tool{min-height:300px;padding:22px}
+      .business{padding:24px}
+      .footer-grid{display:block}
+      .tiny-links{margin-top:22px}
+    }
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="AeroVista Local home">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="22" height="22" fill="none">
+            <path d="M5 23.5 16 6l11 17.5M9.2 18h13.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>AeroVista Local<small>North Idaho</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#tools">Tools</a>
+        <a href="#why">Why we build</a>
+        <a href="#aerovista">AeroVista</a>
+        <a class="nav-cta" href="https://aerovista.us/" target="_blank" rel="noopener">Visit AeroVista ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="topo" aria-hidden="true">
+        <svg viewBox="0 0 1600 900" preserveAspectRatio="none">
+          <g fill="none" stroke="rgba(139,210,255,.20)" stroke-width="1.1">
+            <path d="M-40 212C144 117 273 176 408 127s251-54 405 6 264 23 373-34 269-69 472 28"/>
+            <path d="M-54 249c199-99 327-28 467-88s256-54 406 8 260 27 374-29 270-70 469 35"/>
+            <path d="M-39 292c200-90 339-27 476-83s249-39 385 19 263 27 376-24 270-59 445 37"/>
+            <path d="M-52 337c210-90 345-13 474-71s242-27 371 30 264 32 383-11 269-52 451 46"/>
+            <path d="M-44 388c199-78 337-5 465-51s235-15 358 36 263 35 384-1 271-42 449 55"/>
+            <path d="M-55 447c195-62 328 5 448-36s230-4 345 43 264 38 390 7 276-33 440 58"/>
+            <path d="M-46 516c183-46 314 13 430-24s224 7 336 50 269 42 396 15 278-20 423 63"/>
+            <path d="M-55 595c178-32 299 20 411-8s219 18 329 56 270 47 401 25 278-9 416 66"/>
+          </g>
+        </svg>
+      </div>
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow"><span class="dot"></span> Built around Coeur d'Alene + North Idaho</div>
+          <h1>Useful things,<br><span class="local">built here.</span></h1>
+          <p class="lede">
+            AeroVista Local is a family of free, practical tools for the people who live, work, build, visit and do business in North Idaho.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#tools">Explore local tools <span>↓</span></a>
+            <a class="btn secondary" href="#why">Why we're doing this</a>
+          </div>
+        </div>
+        <aside class="hero-note">
+          <div class="mini-label">The idea</div>
+          <strong>Build something helpful before asking for attention.</strong>
+          <p>
+            Instead of telling the community what AeroVista can build, we would rather put useful software in your hands and let the work speak for itself.
+          </p>
+          <div class="principles">
+            <div class="principle">Useful before promotional.</div>
+            <div class="principle">Simple before bloated.</div>
+            <div class="principle">Local problems first.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Local tools,<br>open to everyone.</h2>
+          <p>
+            AeroVista Local is growing into a family of focused utilities spanning local discovery, local conditions, property intelligence and digital safety. Each app is designed to be fast, mobile-friendly, easy to share and useful without turning every interaction into a sales funnel.
+          </p>
+        </div>
+
+
+        <div class="tools-grid">
+          <a class="tool featured" href="https://cdafair.aerovista.us/" target="_blank" rel="noopener">
+            <div>
+              <span class="status live">Live</span>
+              <h3>CDA Fair Day</h3>
+              <p>
+                Fair-day schedule, planning and event utility for the North Idaho State Fair — built to make a busy local event easier to navigate from your phone.
+              </p>
+            </div>
+            <div class="tool-foot">
+              <span class="tool-type">Local discovery · Events</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+          </a>
+
+          <div class="tool side">
+            <div>
+              <span class="status next">Public URL pending</span>
+              <h3>Lake Day</h3>
+              <p>
+                A conditions and activity planner built around one very North Idaho question: “Is today actually a good lake day?”
+              </p>
+            </div>
+            <div class="tool-foot">
+              <span class="tool-type">Local conditions · Recreation</span>
+              <span class="arrow" aria-hidden="true">•</span>
+            </div>
+          </div>
+
+          <div class="tool side">
+            <div>
+              <span class="status next">Public URL pending</span>
+              <h3>CDA Tonight</h3>
+              <p>
+                A focused local activity and event finder for answering “What is actually worth doing around Coeur d'Alene tonight?”
+              </p>
+            </div>
+            <div class="tool-foot">
+              <span class="tool-type">Local discovery · Tonight</span>
+              <span class="arrow" aria-hidden="true">•</span>
+            </div>
+          </div>
+
+          <a class="tool featured" href="https://lotscope.aerovista.us/" target="_blank" rel="noopener">
+            <div>
+              <span class="status live">Live</span>
+              <h3>LotScope</h3>
+              <p>
+                Early lot and site feasibility in plain English. LotScope helps turn “Can I build that here?” into a useful first-pass view before deeper research, design or due diligence.
+              </p>
+            </div>
+            <div class="tool-foot">
+              <span class="tool-type">Property intelligence · Feasibility</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+          </a>
+
+          <a class="tool" href="https://trustscope.aerovista.us/" target="_blank" rel="noopener">
+            <div>
+              <span class="status live">Live</span>
+              <h3>TrustScope</h3>
+              <p>
+                A practical first-pass trust-signal checker for suspicious messages, links and offers — helping people spot common scam and phishing warning signs before they act.
+              </p>
+            </div>
+            <div class="tool-foot">
+              <span class="tool-type">Digital safety · Fraud awareness</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="coming" aria-label="AeroVista Local focus areas">
+          <div class="coming-card">
+            <span class="status live">Local</span>
+            <h4>Discovery</h4>
+            <p>Find the event, activity or local information that matters right now.</p>
+          </div>
+          <div class="coming-card">
+            <span class="status live">Local</span>
+            <h4>Conditions</h4>
+            <p>Turn scattered weather and activity signals into a simple practical decision.</p>
+          </div>
+          <div class="coming-card">
+            <span class="status live">Practical</span>
+            <h4>Property Intelligence</h4>
+            <p>Make early property questions easier to understand before expensive next steps.</p>
+          </div>
+          <div class="coming-card">
+            <span class="status live">Practical</span>
+            <h4>Digital Safety</h4>
+            <p>Give people a clearer first look at suspicious digital interactions and trust signals.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section story" id="why">
+      <div class="wrap story-grid">
+        <div class="story-sticky">
+          <div class="mini-label">Why AeroVista Local exists</div>
+          <h2>Proof is better than a pitch.</h2>
+          <p>
+            AeroVista works across software, automation, visual media, branding, audio, publishing and interactive experiences. AeroVista Local gives those capabilities a very practical job: make something genuinely useful for the community.
+          </p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <div>
+              <h3>Notice a real local friction point.</h3>
+              <p>Something scattered across five websites. Something people keep asking. Something that should be easier on a phone.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <div>
+              <h3>Build the smallest useful answer.</h3>
+              <p>No giant platform required. Start with the shortest path from “I need to know” to “now I know.”</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <div>
+              <h3>Put it in public and learn from use.</h3>
+              <p>Real usage shows what matters, what is confusing, and what deserves to become more than an experiment.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">04</div>
+            <div>
+              <h3>Let the work introduce AeroVista.</h3>
+              <p>If a local tool saves someone time, helps a business get discovered or makes an event easier to navigate, that is a better introduction than an ad claiming we build useful systems.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>What you're<br>actually seeing.</h2>
+          <p>
+            Each Local release is both a community utility and a small public case study in how AeroVista approaches digital work.
+          </p>
+        </div>
+        <div class="proof-grid">
+          <div class="proof-card">
+            <div class="icon">⌁</div>
+            <h3>Useful product thinking</h3>
+            <p>Turn a messy real-world question into a focused experience people can understand quickly.</p>
+          </div>
+          <div class="proof-card">
+            <div class="icon">◫</div>
+            <h3>Design + development</h3>
+            <p>Responsive interfaces, structured information, deployment, analytics and the practical details that make a tool usable.</p>
+          </div>
+          <div class="proof-card">
+            <div class="icon">↗</div>
+            <h3>Launch + iteration</h3>
+            <p>Ship a real version, observe how it performs, improve what matters and avoid building complexity that has not earned its place.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="aerovista">
+      <div class="wrap business">
+        <div>
+          <div class="mini-label">Built by AeroVista LLC</div>
+          <h2>Need something useful for your business?</h2>
+          <p>
+            The same approach behind AeroVista Local can be applied to a business launch, customer tool, internal workflow, campaign, visual package or automation. Start with the problem. Build the smallest system that solves it well.
+          </p>
+          <div class="hero-actions" style="margin-top:25px">
+            <a class="btn primary" href="https://aerovista.us/" target="_blank" rel="noopener">Explore AeroVista ↗</a>
+            <a class="btn secondary" href="#tools">See the proof</a>
+          </div>
+        </div>
+        <div class="service-list" aria-label="AeroVista capabilities">
+          <div class="service"><span>Web + utility apps</span><span>Nexus</span></div>
+          <div class="service"><span>Brand + launch systems</span><span>Lumina</span></div>
+          <div class="service"><span>Aerial + property media</span><span>Horizon</span></div>
+          <div class="service"><span>Audio + campaign sound</span><span>EchoVerse</span></div>
+          <div class="service"><span>Guides + publishing</span><span>Vespera</span></div>
+          <div class="service"><span>Training + interactive work</span><span>Summit / SkyForge</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div>
+        <strong>AeroVista Local</strong><br>
+        Useful things, built here.<br>
+        <span>Coeur d'Alene · North Idaho</span>
+      </div>
+      <div class="tiny-links">
+        <a href="#tools">Local tools</a>
+        <a href="#why">Why we build</a>
+        <a href="https://aerovista.us/" target="_blank" rel="noopener">AeroVista.us ↗</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
