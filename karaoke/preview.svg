@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">CDA Karaoke preview</title>
+  <desc id="desc">Neon microphone stage artwork for the CDA Karaoke AeroVista Local app.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#080611"/><stop offset=".58" stop-color="#120b20"/><stop offset="1" stop-color="#07121a"/>
+    </linearGradient>
+    <linearGradient id="neon" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ff6fbd"/><stop offset=".5" stop-color="#ad7cff"/><stop offset="1" stop-color="#6fe4ff"/>
+    </linearGradient>
+    <radialGradient id="halo">
+      <stop stop-color="#ff6fbd" stop-opacity=".38"/><stop offset=".45" stop-color="#ad7cff" stop-opacity=".16"/><stop offset="1" stop-color="#080611" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1180" cy="395" r="360" fill="url(#halo)"/>
+  <circle cx="1180" cy="395" r="230" fill="none" stroke="url(#neon)" stroke-width="4" opacity=".35"/>
+  <circle cx="1180" cy="395" r="176" fill="none" stroke="#ffffff" stroke-opacity=".06" stroke-width="2"/>
+  <g transform="translate(1100 210) rotate(-9 80 190)">
+    <rect x="31" y="18" width="98" height="210" rx="49" fill="#0c0914" stroke="url(#neon)" stroke-width="15"/>
+    <path d="M54 77h52M54 112h52M55 147h50" stroke="url(#neon)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M0 140c0 70 49 123 80 123s80-53 80-123M80 263v88M31 361h98" fill="none" stroke="#f8f5ff" stroke-width="16" stroke-linecap="round"/>
+  </g>
+  <ellipse cx="1175" cy="720" rx="290" ry="24" fill="#ad7cff" opacity=".18" filter="url(#glow)"/>
+  <path d="M850 720h650" stroke="url(#neon)" stroke-width="4" opacity=".65"/>
+  <g transform="translate(105 170)">
+    <text x="0" y="0" fill="#cdbfd8" font-family="Arial,Helvetica,sans-serif" font-size="25" font-weight="700" letter-spacing="6">AEROVISTA LOCAL · NORTH IDAHO</text>
+    <text x="0" y="110" fill="#ffffff" font-family="Georgia,'Times New Roman',serif" font-size="104" font-weight="600">CDA</text>
+    <text x="0" y="210" fill="url(#neon)" font-family="Georgia,'Times New Roman',serif" font-size="104" font-weight="600">KARAOKE</text>
+    <text x="0" y="292" fill="#d5cddd" font-family="Arial,Helvetica,sans-serif" font-size="34">Where can I sing tonight?</text>
+    <g transform="translate(0 365)">
+      <rect width="205" height="56" rx="28" fill="#ffffff" fill-opacity=".07" stroke="#ffffff" stroke-opacity=".13"/>
+      <circle cx="28" cy="28" r="7" fill="#7be7ad"/>
+      <text x="48" y="36" fill="#f8f5ff" font-family="Arial,Helvetica,sans-serif" font-size="21" font-weight="700">VERIFIED NIGHTS</text>
+    </g>
+    <g transform="translate(220 365)">
+      <rect width="225" height="56" rx="28" fill="#ffffff" fill-opacity=".07" stroke="#ffffff" stroke-opacity=".13"/>
+      <text x="24" y="36" fill="#f8f5ff" font-family="Arial,Helvetica,sans-serif" font-size="21" font-weight="700">7-DAY VIEW</text>
+    </g>
+  </g>
+</svg>
