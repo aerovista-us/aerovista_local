@@ -22,7 +22,7 @@
     }
     const settings = track.getSettings?.() || {};
     if (settings.echoCancellation === true) {
-      status.textContent = "AEC active · browser is cancelling speaker echo from the microphone path.";
+      status.textContent = "AEC enabled · this device reports browser echo cancellation active.";
       status.dataset.state = "active";
     } else if (settings.echoCancellation === false) {
       status.textContent = toggle.checked
