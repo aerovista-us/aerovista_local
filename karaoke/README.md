@@ -5,6 +5,8 @@ AeroVista Local's two-part karaoke product:
 1. **Where can I sing tonight?** — local karaoke discovery.
 2. **Take the stage** — a browser-based karaoke machine/game using the singer's own audio file and microphone.
 
+Current public route: `https://local.aerovista.us/karaoke/`
+
 ## Current product
 
 CDA Karaoke remains intentionally narrower than CDA Tonight on the discovery side. It promotes dependable recurring karaoke nights first, labels weaker schedule evidence instead of hiding uncertainty, and makes it easy to call the venue or open the source before leaving home.
@@ -16,6 +18,9 @@ The built-in machine adds a second use case: people can stay in the app and actu
 - Local song upload using browser-supported audio formats such as MP3, WAV and M4A.
 - Song playback + volume control.
 - Browser microphone permission through `getUserMedia`.
+- **Speaker Isolation** mode requests browser acoustic echo cancellation (AEC) so phone/laptop playback is reduced in the captured microphone signal where the browser/device supports it.
+- **Raw Vocal** mode disables AEC when an unprocessed mic signal is preferred.
+- The UI reads `MediaStreamTrack.getSettings().echoCancellation` so it reports the device's actual AEC setting when available.
 - Live microphone level meter.
 - Live pitch frequency + musical-note estimate.
 - Adjustable microphone gain.
@@ -26,20 +31,82 @@ The built-in machine adds a second use case: people can stay in the app and actu
 - **Tap-Sync Lyrics** for real karaoke-style line timing: play the song once and tap when each line starts.
 - Full karaoke stage with current line, next line and song progress.
 - Performance game with 0–100 score and live singing combo.
-- Current score intentionally measures vocal presence + detectable pitched singing, not melody accuracy. Melody-accuracy scoring belongs to the future analysis tier.
-- Song and mic processing remain local in the browser in V1.
+- Current score intentionally measures vocal presence + detectable pitched singing, not melody accuracy. Melody-accuracy scoring belongs to the analysis/reference tier.
+- Song, analyzer and mic processing remain local in the browser in V1.
 
-### Browser / hardware notes
+### Speaker Isolation limits
 
-Microphone access requires a secure context (`https://` or localhost) and explicit browser permission. Monitoring the microphone through speakers can create acoustic feedback, so headphones are strongly recommended when **Hear my microphone** is enabled.
+AEC is the same class of technology used by communications apps to reduce loudspeaker audio returning through the microphone, but a browser does not receive every private phone-call DSP feature exposed to native telephony stacks. Results vary by browser, phone, speaker volume, physical mic/speaker geometry, Bluetooth routing and OS processing.
+
+Headphones remain the deterministic way to prevent the backing track from reaching the microphone. Speaker Isolation is designed to make speaker-mode karaoke substantially more usable, not claim perfect source separation.
+
+`restrictOwnAudio` and `suppressLocalAudioPlayback` are screen-capture controls and are intentionally not used for normal microphone capture.
+
+## AeroVista Audio Lab — Analyzer V0.1
+
+The karaoke app now contains the first browser-native version of the high-end music analyzer. It decodes the complete user-provided song locally with Web Audio and performs an offline PCM/spectral scan.
+
+Current outputs:
+
+- tempo / BPM estimate + confidence;
+- harmonic key/mode estimate + confidence using chroma analysis;
+- RMS loudness in dBFS;
+- sample peak in dBFS;
+- active-block dynamic-range estimate;
+- clipping percentage;
+- DC offset;
+- stereo L/R correlation + width indicator;
+- spectral centroid / brightness;
+- 85% spectral rolloff;
+- 120 Hz–4 kHz vocal-band energy share;
+- whole-song energy timeline;
+- source-readiness score and quality warnings.
+
+The analyzer deliberately labels estimates as estimates. V0.1 does **not** claim true LUFS, isolated-vocal analysis, melody transcription or source identity.
+
+### Analyzer roadmap
+
+This should converge with the existing EchoVerse audio-analysis lineage rather than become a separate analytics dialect.
+
+**V0.2 — mastering-grade measurements**
+
+- ITU-R BS.1770 / EBU R128 integrated LUFS;
+- loudness range (LRA);
+- true peak / inter-sample peak;
+- MFCC features;
+- more robust onset/tempo confidence;
+- structural segmentation: intro / verse / chorus / bridge / outro candidates;
+- silence, count-in and likely vocal-entry detection.
+
+**V0.3 — karaoke intelligence**
+
+- vocal-presence probability over time;
+- reference pitch contour;
+- melody-note segmentation;
+- phrase boundaries;
+- lyric/transcription alignment;
+- singer-vs-reference pitch/rhythm scoring;
+- key/transposition recommendations for the singer.
+
+**V1 — Studio pipeline**
+
+- vocal / instrumental stem separation;
+- isolated reference-vocal analyzer;
+- automatic lyrics + word-level timestamps;
+- instrumental render for karaoke playback;
+- optional persistent song-prep jobs and account history.
+
+For heavier real-time DSP, the preferred web path is `AudioWorklet` so custom processing runs on the audio rendering thread instead of the main UI thread.
 
 ## Future Karaoke Studio
 
-The UI reserves two optional product capabilities but deliberately keeps them disabled until a real processing backend exists:
+The UI reserves two optional product capabilities but deliberately keeps them disabled until a real processing backend exists.
 
 ### Strip Vocals
 
-Technically this should be implemented as **vocal separation / stem separation**, not a simple EQ trick. The future service can accept a user-provided audio file and create an instrumental stem plus isolated vocal/reference stem. Likely architecture:
+This should be implemented as **vocal separation / stem separation**, not a simple EQ or center-channel trick. The future service can accept a user-provided audio file and create an instrumental stem plus isolated vocal/reference stem.
+
+Likely architecture:
 
 - job upload / signed object storage;
 - GPU or optimized separation worker;
@@ -50,9 +117,9 @@ Technically this should be implemented as **vocal separation / stem separation**
 
 ### Create Lyrics
 
-Future song prep can create a draft lyric/transcription track from a user-provided song, then align lines/words to timestamps. The output should remain editable because automatic transcription and timing will never be perfect.
+Future song prep can create a draft lyric/transcription track from a user-provided song, then align lines and words to timestamps. The output remains editable because automatic transcription and timing will not always be perfect.
 
-That pipeline also unlocks stronger game scoring because the product can derive a reference vocal/pitch track and compare the singer against it instead of only measuring microphone activity.
+That pipeline also unlocks true game scoring because the product can derive a reference vocal/pitch track and compare the singer against it instead of only measuring microphone activity.
 
 ## Discovery V1
 
@@ -80,30 +147,30 @@ Initial source check: 2026-08-23.
 
 ## Files
 
-- `index.html` — complete app shell including discovery + karaoke machine.
+- `index.html` — complete app shell including discovery + karaoke machine + Audio Lab.
 - `styles.css` — discovery / AeroVista Local visual system.
 - `machine.css` — karaoke machine, lyric studio and game UI.
+- `analyzer.css` — analyzer + Speaker Isolation status UI.
 - `app.js` — schedule/date/filter/render engine.
+- `aec.js` — browser AEC / Speaker Isolation compatibility layer.
 - `machine.js` — song upload, microphone graph, pitch detection, lyric timing and game engine.
+- `analyzer.js` — local full-song PCM, tempo, key, dynamics, stereo and spectral analyzer.
 - `data.js` — source-backed recurring nights and watchlist.
 - `manifest.webmanifest` / `icon.svg` — installable app metadata.
 
-## Recommended public identity
+## Public identity
 
 - Product: **CDA Karaoke**
-- Recommended dedicated repo: `aerovista-us/cda-karaoke`
-- Recommended public host: `karaoke.aerovista.us`
-- Umami website name: `CDA Karaoke`
-- Umami domain: `karaoke.aerovista.us`
-
-The app currently lives under `aerovista_local/karaoke/` as a working incubator build so it can be reviewed before extracting it into a dedicated repo/deployment.
+- Current host: `https://local.aerovista.us/karaoke/`
+- Possible future dedicated repo: `aerovista-us/cda-karaoke`
+- Possible future dedicated host: `karaoke.aerovista.us`
 
 ## Umami
 
-Once the Umami website is created, add its tracker script to `index.html` before `data.js`:
+Once a dedicated Umami website is created, add its tracker script to `index.html` before `data.js`:
 
 ```html
 <script defer src="https://YOUR-UMAMI-HOST/script.js" data-website-id="YOUR-WEBSITE-ID"></script>
 ```
 
-Machine mode additionally calls Umami hooks for song upload, microphone connection, lyric preparation/timing, monitoring and performance start/finish when the tracker is available.
+Machine mode additionally calls Umami hooks for song upload, microphone connection, AEC changes, lyric preparation/timing, monitoring, performance start/finish and Audio Lab analysis when the tracker is available.
