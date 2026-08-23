@@ -4,14 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#090615" />
-  <meta name="description" content="CDA Karaoke — find karaoke tonight in Coeur d'Alene, with recurring nights, confidence labels and direct venue checks." />
-  <meta property="og:title" content="CDA Karaoke — Find the mic tonight" />
-  <meta property="og:description" content="A focused AeroVista Local guide to karaoke nights in Coeur d'Alene." />
+  <meta name="description" content="CDA Karaoke — find karaoke nights in Coeur d'Alene or run a real browser karaoke machine with mic support, your own song and synced lyrics." />
+  <meta property="og:title" content="CDA Karaoke — Find the mic or take the stage" />
+  <meta property="og:description" content="Find local karaoke nights or turn your browser into a karaoke machine with microphone support, song upload, lyrics and game scoring." />
   <meta property="og:type" content="website" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
-  <title>CDA Karaoke — Find the mic tonight</title>
+  <link rel="stylesheet" href="machine.css" />
+  <title>CDA Karaoke — Find the mic or take the stage</title>
 </head>
 <body>
   <div class="ambient ambient-a" aria-hidden="true"></div>
@@ -22,17 +23,18 @@
       <span class="brand-mark">AV</span>
       <span><strong>AeroVista Local</strong><small>CDA Karaoke</small></span>
     </a>
-    <a class="quiet-link" href="#sources">Sources</a>
+    <div class="footer-links"><a class="quiet-link" href="#karaokeMachine">Sing now</a><a class="quiet-link" href="#sources">Sources</a></div>
   </header>
 
   <main>
     <section class="hero">
       <div class="hero-copy">
         <div class="eyebrow"><span class="live-dot"></span> Coeur d'Alene · North Idaho</div>
-        <h1>Where can I<br><span>sing tonight?</span></h1>
-        <p class="lede">Karaoke nights without digging through old posts, bar pages and half-updated calendars.</p>
+        <h1>Find the mic.<br><span>Or take the stage.</span></h1>
+        <p class="lede">Find karaoke nights around CDA — or turn your browser into the karaoke machine. Bring your own song, connect a mic, add lyrics and play.</p>
         <div class="hero-actions">
-          <button id="jumpTonight" class="btn primary" type="button">Show tonight</button>
+          <a class="btn primary" href="#karaokeMachine" data-umami-event="karaoke-open-machine">Start singing</a>
+          <button id="jumpTonight" class="btn secondary" type="button">Find karaoke tonight</button>
           <button id="jumpWeek" class="btn secondary" type="button">See the week</button>
         </div>
       </div>
@@ -46,6 +48,92 @@
     <section class="status-strip" aria-live="polite">
       <div><span class="status-label">Right now</span><strong id="todayLabel">Loading…</strong></div>
       <div class="status-answer" id="todayAnswer">Checking the local schedule…</div>
+    </section>
+
+    <section class="machine-section" id="karaokeMachine">
+      <div class="machine-head">
+        <div><span class="eyebrow">Built-in karaoke game</span><h2>Your song.<br>Your mic. Go.</h2></div>
+        <p>Everything in this version runs in your browser. Upload an audio file, connect a microphone, paste lyrics, sync them once and perform with a live score, combo and pitch readout.</p>
+      </div>
+
+      <div class="machine-grid">
+        <section class="machine-panel" aria-labelledby="songSetupTitle">
+          <h3 id="songSetupTitle">1 · Load your song</h3>
+          <p class="panel-copy">MP3, WAV, M4A and other browser-supported audio formats. The file stays on this device.</p>
+          <div class="control-stack">
+            <label class="upload-zone">
+              <input id="songFile" type="file" accept="audio/*" />
+              <span><strong>Choose your song</strong><span>Tap to upload from this device</span></span>
+            </label>
+            <div id="songName" class="song-name">No song loaded yet.</div>
+            <audio id="karaokeAudio" class="machine-audio" controls preload="metadata"></audio>
+            <label class="range-row" for="songVolume"><span>Song volume</span><input id="songVolume" type="range" min="0" max="1" value="0.9" step="0.01" /><output id="songVolumeOut">90%</output></label>
+          </div>
+        </section>
+
+        <section class="karaoke-stage" aria-label="Karaoke stage">
+          <div class="stage-top">
+            <div class="stage-song"><strong id="stageSongName">No song loaded</strong><span id="stageSongMeta">Upload a song to begin</span></div>
+            <div class="score-box"><strong id="scoreValue">0</strong><span>performance score</span></div>
+          </div>
+          <div class="lyric-screen" aria-live="polite">
+            <div class="lyric-kicker">Now singing</div>
+            <p id="currentLyric" class="current-lyric">Load a song and add lyrics.</p>
+            <div id="nextLyric" class="next-lyric">Your next line will appear here.</div>
+            <div><span id="comboValue" class="combo-pill">0.0s combo</span></div>
+          </div>
+          <div class="stage-progress"><div id="stageProgressBar" class="stage-progress-bar"></div></div>
+          <div class="stage-controls">
+            <button id="startGame" class="machine-btn hot" type="button" disabled>Start performance</button>
+            <button id="pauseGame" class="machine-btn" type="button" disabled>Pause</button>
+            <button id="restartGame" class="machine-btn" type="button" disabled>Restart</button>
+          </div>
+        </section>
+
+        <section class="machine-panel" aria-labelledby="micSetupTitle">
+          <h3 id="micSetupTitle">2 · Connect your mic</h3>
+          <p class="panel-copy">Live input meter + pitch detection. Headphones are strongly recommended if you enable mic monitoring.</p>
+          <div class="control-stack">
+            <div class="mic-actions"><button id="micConnect" class="machine-btn primary" type="button">Connect microphone</button></div>
+            <div class="mic-status">
+              <div class="mic-status-main"><strong id="micState">Mic disconnected</strong><span id="micStateDetail">Connect when you are ready to sing.</span><div class="level-shell"><div id="micLevelBar" class="level-bar"></div></div></div>
+              <div class="pitch-readout"><strong id="pitchValue">—</strong><span id="noteValue">No pitch</span></div>
+            </div>
+            <label class="range-row" for="micGain"><span>Mic gain</span><input id="micGain" type="range" min="0" max="2" value="1" step="0.05" /><output id="micGainOut">1.0×</output></label>
+            <label class="range-row" for="echoAmount"><span>Mic echo</span><input id="echoAmount" type="range" min="0" max="0.8" value="0.2" step="0.01" /><output id="echoAmountOut">20%</output></label>
+            <label class="switch-row" for="monitorToggle"><span><strong>Hear my microphone</strong><br><span class="warning-note">Can cause speaker feedback. Use headphones.</span></span><input id="monitorToggle" type="checkbox" /></label>
+          </div>
+        </section>
+
+        <section class="machine-panel lyrics-panel" aria-labelledby="lyricsTitle">
+          <h3 id="lyricsTitle">3 · Add + sync lyrics</h3>
+          <p class="panel-copy">Paste lyrics with one sung phrase per line. Auto-time works instantly; Tap-Sync gives you real karaoke timing.</p>
+          <textarea id="lyricsInput" class="lyrics-input" spellcheck="false" placeholder="Paste lyrics here…&#10;&#10;One phrase per line&#10;works best for karaoke timing"></textarea>
+          <div class="lyrics-tools">
+            <button id="prepareLyrics" class="machine-btn primary" type="button">Prepare lyrics</button>
+            <button id="autoTimeLyrics" class="machine-btn" type="button" disabled>Auto-time</button>
+            <button id="startSync" class="machine-btn" type="button" disabled>Start Tap-Sync</button>
+          </div>
+          <div id="syncStatus" class="sync-status">Paste your lyrics, then choose Prepare lyrics.</div>
+          <div id="syncPad" class="sync-pad">
+            <div id="syncNow" class="sync-now">Waiting for lyric…</div>
+            <button id="tapSync" class="tap-btn" type="button">Tap when this line starts</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="future-studio">
+        <div>
+          <span class="eyebrow">Future Karaoke Studio</span>
+          <h3>One-click song prep is already reserved in the product.</h3>
+          <p>The next product tier can optionally separate lead vocals from the instrumental and create draft lyric timing from an uploaded song. Those require heavier audio/AI processing, so the buttons stay visibly disabled until the backend is actually connected.</p>
+        </div>
+        <div class="future-actions">
+          <button class="future-chip" type="button" disabled>Strip vocals <span>Coming soon</span></button>
+          <button class="future-chip" type="button" disabled>Create lyrics <span>Coming soon</span></button>
+        </div>
+      </div>
+      <div class="privacy-line">Current machine mode processes your uploaded song and microphone locally in the browser.</div>
     </section>
 
     <section class="section" id="schedule">
@@ -74,10 +162,7 @@
     </section>
 
     <section class="trust-band" id="sources">
-      <div>
-        <span class="eyebrow">How this stays useful</span>
-        <h2>Confidence before hype.</h2>
-      </div>
+      <div><span class="eyebrow">How this stays useful</span><h2>Confidence before hype.</h2></div>
       <div class="trust-copy">
         <p><strong>Venue confirmed</strong> means the recurring night appears on a first-party venue or host schedule. <strong>Reported</strong> means karaoke is credibly associated with the venue, but the exact weekly slot needs a fresh confirmation.</p>
         <p>Schedules change. Every card includes its source, phone and a quick “check first” path so stale information is obvious instead of hidden.</p>
@@ -92,10 +177,11 @@
 
   <footer>
     <div><strong>CDA Karaoke</strong><br><span>AeroVista Local · Useful things, built here.</span></div>
-    <div class="footer-links"><a href="../">Local home</a><a href="https://cdatonight.aerovista.us/" target="_blank" rel="noopener">CDA Tonight ↗</a></div>
+    <div class="footer-links"><a href="../">Local home</a><a href="#karaokeMachine">Karaoke machine</a><a href="https://cdatonight.aerovista.us/" target="_blank" rel="noopener">CDA Tonight ↗</a></div>
   </footer>
 
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script src="machine.js"></script>
 </body>
 </html>
