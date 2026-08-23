@@ -4,7 +4,6 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-
 $UmamiHost = $UmamiHost.TrimEnd('/')
 
 Write-Host "AeroVista Local -> Umami registration" -ForegroundColor Cyan
@@ -21,11 +20,13 @@ $loginBody = @{
 } | ConvertTo-Json
 
 try {
-  $login = Invoke-RestMethod \
-    -Uri "$UmamiHost/api/auth/login" \
-    -Method Post \
-    -ContentType "application/json" \
-    -Body $loginBody
+  $loginParams = @{
+    Uri         = "$UmamiHost/api/auth/login"
+    Method      = "Post"
+    ContentType = "application/json"
+    Body        = $loginBody
+  }
+  $login = Invoke-RestMethod @loginParams
 }
 finally {
   $password = $null
@@ -50,18 +51,20 @@ $targets = @(
   [pscustomobject]@{ Name = "AeroVista Local - TrustScope";   Domain = "trustscope.aerovista.us" }
 )
 
-$existingResponse = Invoke-RestMethod \
-  -Uri "$UmamiHost/api/websites?pageSize=100" \
-  -Headers $headers \
-  -Method Get
-
+$listParams = @{
+  Uri     = "$UmamiHost/api/websites?pageSize=100"
+  Headers = $headers
+  Method  = "Get"
+}
+$existingResponse = Invoke-RestMethod @listParams
 $existing = @($existingResponse.data)
 $results = @()
 
 foreach ($target in $targets) {
+  $shortName = $target.Name -replace '^AeroVista Local - ', ''
   $match = $existing | Where-Object {
     $_.name -eq $target.Name -or
-    ($_.domain -eq $target.Domain -and $_.name -match [regex]::Escape(($target.Name -replace '^AeroVista Local - ', '')))
+    ($_.domain -eq $target.Domain -and $_.name -match [regex]::Escape($shortName))
   } | Select-Object -First 1
 
   if ($match) {
@@ -75,24 +78,28 @@ foreach ($target in $targets) {
       domain = $target.Domain
     } | ConvertTo-Json
 
-    $site = Invoke-RestMethod \
-      -Uri "$UmamiHost/api/websites" \
-      -Headers $headers \
-      -Method Post \
-      -ContentType "application/json" \
-      -Body $body
+    $createParams = @{
+      Uri         = "$UmamiHost/api/websites"
+      Headers     = $headers
+      Method      = "Post"
+      ContentType = "application/json"
+      Body        = $body
+    }
+    $site = Invoke-RestMethod @createParams
 
     Write-Host "CREATED $($target.Name)  [$($site.id)]" -ForegroundColor Green
     $status = "created"
     $existing += $site
   }
 
+  $tracker = '<script defer src="{0}/script.js" data-website-id="{1}"></script>' -f $UmamiHost, $site.id
+
   $results += [pscustomobject]@{
     name      = $target.Name
     domain    = $target.Domain
     websiteId = $site.id
     status    = $status
-    tracker   = "<script defer src=\"$UmamiHost/script.js\" data-website-id=\"$($site.id)\"></script>"
+    tracker   = $tracker
   }
 }
 
