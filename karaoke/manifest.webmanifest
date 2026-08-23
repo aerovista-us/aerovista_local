@@ -1,0 +1,17 @@
+{
+  "name": "CDA Karaoke — AeroVista Local",
+  "short_name": "CDA Karaoke",
+  "description": "Find karaoke tonight in Coeur d'Alene.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080611",
+  "theme_color": "#090615",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
