@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#090615" />
+  <meta name="description" content="CDA Karaoke — find karaoke tonight in Coeur d'Alene, with recurring nights, confidence labels and direct venue checks." />
+  <meta property="og:title" content="CDA Karaoke — Find the mic tonight" />
+  <meta property="og:description" content="A focused AeroVista Local guide to karaoke nights in Coeur d'Alene." />
+  <meta property="og:type" content="website" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>CDA Karaoke — Find the mic tonight</title>
+</head>
+<body>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="../" aria-label="AeroVista Local">
+      <span class="brand-mark">AV</span>
+      <span><strong>AeroVista Local</strong><small>CDA Karaoke</small></span>
+    </a>
+    <a class="quiet-link" href="#sources">Sources</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> Coeur d'Alene · North Idaho</div>
+        <h1>Where can I<br><span>sing tonight?</span></h1>
+        <p class="lede">Karaoke nights without digging through old posts, bar pages and half-updated calendars.</p>
+        <div class="hero-actions">
+          <button id="jumpTonight" class="btn primary" type="button">Show tonight</button>
+          <button id="jumpWeek" class="btn secondary" type="button">See the week</button>
+        </div>
+      </div>
+      <div class="mic-stage" aria-hidden="true">
+        <div class="mic-glow"></div>
+        <div class="mic">🎙</div>
+        <div class="stage-line"></div>
+      </div>
+    </section>
+
+    <section class="status-strip" aria-live="polite">
+      <div><span class="status-label">Right now</span><strong id="todayLabel">Loading…</strong></div>
+      <div class="status-answer" id="todayAnswer">Checking the local schedule…</div>
+    </section>
+
+    <section class="section" id="schedule">
+      <div class="section-head">
+        <div><span class="eyebrow">Pick a night</span><h2>This week</h2></div>
+        <button id="verifiedToggle" class="filter-toggle" type="button" aria-pressed="false">Verified only</button>
+      </div>
+      <div id="dayRail" class="day-rail" role="tablist" aria-label="Select a day"></div>
+      <div id="selectedSummary" class="selected-summary"></div>
+      <div id="eventList" class="event-list"></div>
+    </section>
+
+    <section class="section compact" id="up-next">
+      <div class="section-head">
+        <div><span class="eyebrow">Plan ahead</span><h2>Next good bets</h2></div>
+      </div>
+      <div id="nextList" class="next-grid"></div>
+    </section>
+
+    <section class="section compact">
+      <div class="section-head">
+        <div><span class="eyebrow">Still worth checking</span><h2>Event-driven spots</h2></div>
+        <p class="section-note">These venues host karaoke, but the current evidence does not support a dependable weekly slot.</p>
+      </div>
+      <div id="watchList" class="watch-grid"></div>
+    </section>
+
+    <section class="trust-band" id="sources">
+      <div>
+        <span class="eyebrow">How this stays useful</span>
+        <h2>Confidence before hype.</h2>
+      </div>
+      <div class="trust-copy">
+        <p><strong>Venue confirmed</strong> means the recurring night appears on a first-party venue or host schedule. <strong>Reported</strong> means karaoke is credibly associated with the venue, but the exact weekly slot needs a fresh confirmation.</p>
+        <p>Schedules change. Every card includes its source, phone and a quick “check first” path so stale information is obvious instead of hidden.</p>
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <div><span class="eyebrow">Know something we missed?</span><h2>Help keep the mic map current.</h2><p>New karaoke night, changed host, wrong time, cancelled recurrence — send the correction once and we can update the Local feed.</p></div>
+      <a class="btn primary" href="https://cdatonight.aerovista.us/submit" target="_blank" rel="noopener" data-umami-event="karaoke-submit-update">Submit an update ↗</a>
+    </section>
+  </main>
+
+  <footer>
+    <div><strong>CDA Karaoke</strong><br><span>AeroVista Local · Useful things, built here.</span></div>
+    <div class="footer-links"><a href="../">Local home</a><a href="https://cdatonight.aerovista.us/" target="_blank" rel="noopener">CDA Tonight ↗</a></div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
