@@ -93,15 +93,22 @@
 
         <section class="machine-panel" aria-labelledby="micSetupTitle">
           <h3 id="micSetupTitle">2 · Connect your mic</h3>
-          <p class="panel-copy">Live input meter + pitch detection. Speaker Isolation asks the browser to cancel music coming back through the phone or laptop speakers.</p>
+          <p class="panel-copy">Live input meter + pitch detection. Choose how much browser echo cancellation you want instead of forcing maximum cleanup on every singer.</p>
           <div class="control-stack">
             <div class="mic-actions"><button id="micConnect" class="machine-btn primary" type="button">Connect microphone</button></div>
             <div class="mic-status">
               <div class="mic-status-main"><strong id="micState">Mic disconnected</strong><span id="micStateDetail">Connect when you are ready to sing.</span><div class="level-shell"><div id="micLevelBar" class="level-bar"></div></div></div>
               <div class="pitch-readout"><strong id="pitchValue">—</strong><span id="noteValue">No pitch</span></div>
             </div>
-            <label class="switch-row" for="speakerIsolation"><span><strong>Speaker Isolation</strong><br><span class="warning-note">AEC: reduce song playback leaking into the mic. Best for phone/laptop speakers.</span></span><input id="speakerIsolation" type="checkbox" checked /></label>
-            <div id="aecStatus" class="aec-status">AEC will be requested when the mic connects.</div>
+            <label class="mic-mode-row" for="speakerMode">
+              <span><strong>Mic cleanup</strong><br><span class="warning-note">If word endings disappear, step toward Vocal First. If the backing track leaks too much, step toward Strong Isolation.</span></span>
+              <select id="speakerMode">
+                <option value="vocal">Vocal First · preserve words</option>
+                <option value="balanced" selected>Balanced · recommended</option>
+                <option value="strong">Strong Isolation · max AEC</option>
+              </select>
+            </label>
+            <div id="aecStatus" class="aec-status">Balanced will use normal browser AEC with a softer backing level.</div>
             <label class="range-row" for="micGain"><span>Mic gain</span><input id="micGain" type="range" min="0" max="2" value="1" step="0.05" /><output id="micGainOut">1.0×</output></label>
             <label class="range-row" for="echoAmount"><span>Mic echo</span><input id="echoAmount" type="range" min="0" max="0.8" value="0.2" step="0.01" /><output id="echoAmountOut">20%</output></label>
             <label class="switch-row" for="monitorToggle"><span><strong>Hear my microphone</strong><br><span class="warning-note">Can cause speaker feedback. Headphones are best for monitoring.</span></span><input id="monitorToggle" type="checkbox" /></label>
@@ -148,7 +155,7 @@
           <button class="future-chip" type="button" disabled>Create lyrics <span>Coming soon</span></button>
         </div>
       </div>
-      <div class="privacy-line">Current machine mode, Speaker Isolation request and analyzer all process on this device. No song upload is required.</div>
+      <div class="privacy-line">Current machine mode, mic cleanup presets and analyzer all process on this device. No song upload is required.</div>
     </section>
 
     <section class="section" id="schedule">
